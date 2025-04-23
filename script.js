@@ -218,108 +218,92 @@ snakesResetBtn.addEventListener('click', resetSnakesGame);
 
 
 // --------- BACKGAMMON GAME ---------
-const backgammonRollBtn = document.getElementById('backgammon-rollBtn');
-const backgammonResetBtn = document.getElementById('backgammon-resetBtn');
-const backgammonDoubleBtn = document.getElementById('backgammon-doubleBtn');
-const backgammonDice1 = document.getElementById('backgammon-dice1');
-const backgammonDice2 = document.getElementById('backgammon-dice2');
-const backgammonMoves = document.getElementById('backgammon-moves');
-const backgammonResult = document.getElementById('backgammon-result');
-const backgammonCube = document.getElementById('backgammon-cube');
+// Refactored Backgammon Game Logic
 
-// Backgammon game state variables
-let doubleValue = 1;
-let currentPlayer = 1;
-let canDouble = true;
+const backgammon = (() => {
+    const rollBtn = document.getElementById('backgammon-rollBtn');
+    const resetBtn = document.getElementById('backgammon-resetBtn');
+    const doubleBtn = document.getElementById('backgammon-doubleBtn');
+    const dice1 = document.getElementById('backgammon-dice1');
+    const dice2 = document.getElementById('backgammon-dice2');
+    const movesDisplay = document.getElementById('backgammon-moves');
+    const resultDisplay = document.getElementById('backgammon-result');
+    const cubeDisplay = document.getElementById('backgammon-cube');
+    const currentPlayerDisplay = document.getElementById('backgammon-currentPlayer');
 
-// Function to roll the dice for backgammon
-function rollBackgammonDice() {
-    // Add rolling animation
-    backgammonDice1.classList.add('rolling');
-    backgammonDice2.classList.add('rolling');
-    
-    // Disable roll button during animation
-    backgammonRollBtn.disabled = true;
-    
-    // Generate random numbers between 1 and 6 for both dice
-    const roll1 = Math.floor(Math.random() * 6) + 1;
-    const roll2 = Math.floor(Math.random() * 6) + 1;
-    
-    // Set a timeout to show the animation
-    setTimeout(() => {
-        // Update dice visualization
-        updateDiceDisplay(backgammonDice1, roll1);
-        updateDiceDisplay(backgammonDice2, roll2);
-        
-        // Remove rolling animation
-        backgammonDice1.classList.remove('rolling');
-        backgammonDice2.classList.remove('rolling');
-        
-        // Re-enable roll button
-        backgammonRollBtn.disabled = false;
-        
-        // Determine moves available
-        if (roll1 === roll2) {
-            // Doubles
-            backgammonMoves.textContent = `Available moves  for playe${currentPlayer}:  ${roll1}, ${roll1}, ${roll1}, ${roll1}`;
-            backgammonResult.textContent = `Doubles! Four moves of ${roll1}`;
-            backgammonResult.style.color = "#ff9800";
-        } else {
-            backgammonMoves.textContent = `Available moves for playe${currentPlayer}  : ${roll1}, ${roll2}`;
-            document.getElementById("backgammon-currentPlayer").textContent = `Player ${currentPlayer}'s moves`;
-            backgammonResult.style.color = currentPlayer === 1 ? "#4caf50" : "#2196f3";
-        }
-        
-        // Switch player after roll
-        currentPlayer = currentPlayer === 1 ? 2 : 1;       
-        backgammonResult.textContent = `Player ${currentPlayer}'s turn`;
+    let currentPlayer = 1;
+    let canDouble = true;
 
-        
-        // Enable double button for next player
-        canDouble = true;
-    }, 600);
-}
+    function rollDice() {
+        animateDiceRoll(dice1);
+        animateDiceRoll(dice2);
+        rollBtn.disabled = true;
 
-// Function to handle doubling the cube
-function handleDouble() {
-    if (!canDouble) return;
-    
-    if (doubleValue < 64) {
-        doubleValue *= 2;
-        backgammonCube.textContent = `Cube: ${doubleValue}`;
-        backgammonResult.textContent = `Player ${currentPlayer} doubled to ${doubleValue}!`;
-        backgammonResult.style.color = "#ff9800";
-        
-        // Disable doubling for this player until next turn
-        canDouble = false;
-    } else {
-        backgammonResult.textContent = "Maximum double reached!";
+        const roll1 = getRandomDiceRoll();
+        const roll2 = getRandomDiceRoll();
+
+        setTimeout(() => {
+            updateDice(dice1, roll1);
+            updateDice(dice2, roll2);
+            rollBtn.disabled = false;
+
+            const moves = roll1 === roll2 ? Array(4).fill(roll1) : [roll1, roll2];
+            movesDisplay.textContent = `Available moves for Player ${currentPlayer}: ${moves.join(', ')}`;
+            resultDisplay.textContent = roll1 === roll2 ? `Doubles! Four moves of ${roll1}` : `Player ${currentPlayer} rolled ${roll1} and ${roll2}`;
+            resultDisplay.style.color = roll1 === roll2 ? '#ff9800' : currentPlayer === 1 ? '#4caf50' : '#2196f3';
+
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            currentPlayerDisplay.textContent = `Player ${currentPlayer}'s turn`;
+            resultDisplay.textContent += `\nNow it's Player ${currentPlayer}'s turn.`;
+            canDouble = true;
+        }, 600);
     }
-}
 
-// Function to reset the backgammon game
-function resetBackgammonGame() {
-    doubleValue = 1;
-    currentPlayer = 1;
-    canDouble = true;
-    backgammonCube.textContent = 'Cube: 1';
-    backgammonResult.textContent = 'Roll dice to play!';
-    backgammonResult.style.color = '#333';
-    backgammonMoves.textContent = 'Available moves: -';
-    document.getElementById("backgammon-currentPlayer").textContent = `Player 1's turn`;
-    
-    // Reset dice to show just one dot
-    updateDiceDisplay(backgammonDice1, 1);
-    updateDiceDisplay(backgammonDice2, 1);
-}
+    function resetGame() {
+        currentPlayer = 1;
+        canDouble = true;
+        cubeDisplay.textContent = 'Cube: 1';
+        resultDisplay.textContent = 'Roll dice to play!';
+        resultDisplay.style.color = '#333';
+        movesDisplay.textContent = 'Available moves: -';
+        currentPlayerDisplay.textContent = `Player 1's turn`;
+        updateDice(dice1, 1);
+        updateDice(dice2, 1);
+    }
 
+    function getRandomDiceRoll() {
+        return Math.floor(Math.random() * 6) + 1;
+    }
 
-// Event listeners for backgammon game
-backgammonRollBtn.addEventListener('click', rollBackgammonDice);
-backgammonDoubleBtn.addEventListener('click', handleDouble);
-backgammonResetBtn.addEventListener('click', resetBackgammonGame);
+    function animateDiceRoll(dice) {
+        dice.classList.add('rolling');
+        setTimeout(() => dice.classList.remove('rolling'), 600);
+    }
 
+    function updateDice(diceElement, value) {
+        diceElement.innerHTML = '';
+        const dotPositions = {
+            1: ['center'],
+            2: ['top-left', 'bottom-right'],
+            3: ['top-left', 'center', 'bottom-right'],
+            4: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+            5: ['top-left', 'top-right', 'center', 'bottom-left', 'bottom-right'],
+            6: ['top-left', 'top-right', 'middle-left', 'middle-right', 'bottom-left', 'bottom-right']
+        };
+        dotPositions[value].forEach(pos => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot', pos);
+            diceElement.appendChild(dot);
+        });
+    }
 
+    rollBtn.addEventListener('click', rollDice);
+    resetBtn.addEventListener('click', resetGame);
+
+    return {
+        reset: resetGame
+    };
+})();
     // --------- UTILITY FUNCTIONS ---------
     
     // Function to update dice display based on roll value
