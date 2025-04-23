@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Game Dice Roller</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Multi-Game Dice Roller</h1>
+            <nav class="game-selector">
+                <button class="tab-btn active" data-game="regular">Regular Dice Game</button>
+                <button class="tab-btn" data-game="backgammon">Backgammon</button>
+                <button class="tab-btn" data-game="snakes">Snakes &amp; Ladders</button>
+            </nav>
+        </header>
+
+        <!-- Regular Dice Game Section -->
+        <section id="regular-game" class="game-section active">
+            <h2>Regular Dice Game</h2>
+            <div class="game-area">
+                <div class="player-section">
+                    <h3>Player 1</h3>
+                    <div class="dice" id="regular-dice1">
+                        <div class="dot center"></div>
+                    </div>
+                    <p class="score" id="regular-score1">Score: 0</p>
+                </div>
+                
+                <div class="controls">
+                    <button id="regular-rollBtn" class="roll-btn">Roll Dice</button>
+                    <div id="regular-result" class="result">Ready to play!</div>
+                    <button id="regular-resetBtn" class="reset-btn">Reset Game</button>
+                </div>
+                
+                <div class="player-section">
+                    <h3>Player 2</h3>
+                    <div class="dice" id="regular-dice2">
+                        <div class="dot center"></div>
+                    </div>
+                    <p class="score" id="regular-score2">Score: 0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Backgammon Section -->
+        <section id="backgammon-game" class="game-section">
+            <h2>Backgammon Dice</h2>
+            <div class="game-area backgammon-area">
+                <div class="player-section single-player">
+                    <h3 id="backgammon-currentPlayer">Player 1's turn</h3>
+                    <div class="dice-container">
+                        <div class="dice" id="backgammon-dice1">
+                            <div class="dot center"></div>
+                        </div>
+                        <div class="dice" id="backgammon-dice2">
+                            <div class="dot center"></div>
+                        </div>
+                    </div>
+                    <p class="move-info" id="backgammon-moves">Available moves: -</p>
+                </div>
+                
+                <div class="controls">
+                    <button id="backgammon-rollBtn" class="roll-btn">Roll Dice</button>
+                    <div id="backgammon-result" class="result">Roll dice to play!</div>
+                    <button id="backgammon-resetBtn" class="reset-btn">New Game</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Snakes & Ladders Section -->
+        <section id="snakes-game" class="game-section">
+            <h2>Snakes &amp; Ladders Dice</h2>
+            <div class="game-area snakes-area">
+                <div class="player-info">
+                    <div class="player-token player1-token active-player">
+                        <span class="token-icon">P1</span>
+                    </div>
+                    <div class="player-token player2-token">
+                        <span class="token-icon">P2</span>
+                    </div>
+                </div>
+                
+                <div class="snakes-board-container">
+                    <div class="board-visual">
+                        <div id="player1-position" class="position-marker p1">1</div>
+                        <div id="player2-position" class="position-marker p2">1</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="dice" id="snakes-dice">
+                        <div class="dot center"></div>
+                    </div>
+                    <button id="snakes-rollBtn" class="roll-btn">Roll Dice</button>
+                    <div id="snakes-result" class="result">Start at position 1</div>
+                    <div id="snakes-moves" class="moves-log">Roll to move!</div>
+                    <button id="snakes-resetBtn" class="reset-btn">New Game</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
